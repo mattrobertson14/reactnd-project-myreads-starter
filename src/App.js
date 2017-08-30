@@ -6,14 +6,13 @@ import './App.css'
 class BooksApp extends Component {
   state = {
     books: [],
-    test: false,
     /**
      * TODO: Instead of using this state variable to keep track of which page
      * we're on, use the URL in the browser's address bar. This will ensure that
      * users can use the browser's back and forward buttons to navigate between
      * pages, as well as provide a good URL they can bookmark and share.
      */
-    showSearchPage: true
+    showSearchPage: false
   }
 
   componentDidMount(){
@@ -22,11 +21,15 @@ class BooksApp extends Component {
     })
   }
 
-  updateBook = (book, shelf) => {
-    BooksAPI.update(book, shelf)
-    BooksAPI.getAll().then((books) => {
-      this.setState({ books })
+  updateBook = (book, new_shelf) => {
+    BooksAPI.update(book, new_shelf)
+    var x = this.state.books.map((b) => {
+      if (b.id === book.id) {
+        b.shelf = new_shelf
+      }
+      return b
     })
+    this.setState({ books : x })
   }
 
   render() {

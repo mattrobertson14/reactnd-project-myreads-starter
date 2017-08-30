@@ -1,6 +1,6 @@
 import React, {Component} from 'react'
-import * as BooksAPI from './BooksAPI'
 import './App.css'
+
 
 class Book extends Component {
 	state = {
@@ -12,7 +12,6 @@ class Book extends Component {
 	}
 
 	render() {
-		console.log(this.state.currentChoice)
 		const book = this.props.info
 		return(
 			<div className="book">
