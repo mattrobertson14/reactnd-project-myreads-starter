@@ -5,10 +5,12 @@ import './App.css'
 class Book extends Component {
 	
 	render() {
+		const book = this.props.info
+		console.log(book)
 		return(
 			<div className="book">
               <div className="book-top">
-                <div className="book-cover" style={{ backgroundImage: `url(${this.props.img_url})` }}></div>
+                <div className="book-cover" style={{ backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
 	                <div className="book-shelf-changer">
 	                  <select>
 	                    <option value="none" disabled>Move to...</option>
@@ -19,8 +21,10 @@ class Book extends Component {
 	                  </select>
 	                </div>
               	</div>
-              <div className="book-title">{this.props.title}</div>
-              <div className="book-authors">{this.props.authors}</div>
+              <div className="book-title">{book.title}</div>
+              {book.authors.map(author => (
+              	<div key={author} className="book-authors">{author}</div>
+              ))}
             </div>
 		)
 	}
