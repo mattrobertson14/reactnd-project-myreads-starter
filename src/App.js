@@ -6,6 +6,8 @@ import './App.css'
 class BooksApp extends Component {
   state = {
     books: [],
+    query: '',
+    searchResults: [],
     /**
      * TODO: Instead of using this state variable to keep track of which page
      * we're on, use the URL in the browser's address bar. This will ensure that
@@ -23,13 +25,17 @@ class BooksApp extends Component {
 
   updateBook = (book, new_shelf) => {
     BooksAPI.update(book, new_shelf)
-    var x = this.state.books.map((b) => {
-      if (b.id === book.id) {
-        b.shelf = new_shelf
-      }
-      return b
-    })
-    this.setState({ books : x })
+    var updatedBooks = findAndChange(this.state.books, book, new_shelf)
+    this.setState({ books : updatedBooks })
+  }
+
+  updateQuery = (query) => {
+    this.setState({ query })
+    if (BooksAPI.search(query)){
+      BooksAPI.search(query).then((res) => {
+        this.setState({ searchResults : res })
+      })
+    }
   }
 
   render() {
@@ -40,19 +46,19 @@ class BooksApp extends Component {
             <div className="search-books-bar">
               <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
               <div className="search-books-input-wrapper">
-                {/*
-                  NOTES: The search from BooksAPI is limited to a particular set of search terms.
-                  You can find these search terms here:
-                  https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-                  However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-                  you don't find a specific author or title. Every search is limited by search terms.
-                */}
-                <input type="text" placeholder="Search by title or author"/>
+                {}
+                <input type="text" placeholder="Search by title or author" value={this.state.query} onChange={(event) => this.updateQuery(event.target.value)}/>
 
               </div>
             </div>
             <div className="search-books-results">
-              <ol className="books-grid"></ol>
+              <ol className="books-grid">
+                {(this.state.searchResults && this.state.searchResults.length > 0)? this.state.searchResults.map(book => (
+                  <li key={book.id}>
+                    <Book info={book} updateShelf={this.updateShelf} />
+                  </li>
+                )) : null}
+              </ol>
             </div>
           </div>
         ) : (
@@ -108,6 +114,18 @@ class BooksApp extends Component {
       </div>
     )
   }
+}
+
+/* Finds a book in an array and updates it's shelf */
+function findAndChange(books, book, new_shelf) {
+  var newArray = books.map((b) => {
+    if (b.id === book.id) {
+      b.shelf = new_shelf
+    }
+    return b
+  })
+
+  return newArray
 }
 
 export default BooksApp
