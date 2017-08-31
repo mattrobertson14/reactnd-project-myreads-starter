@@ -8,12 +8,6 @@ class BooksApp extends Component {
     books: [],
     query: '',
     searchResults: [],
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
     showSearchPage: false
   }
 
@@ -25,16 +19,19 @@ class BooksApp extends Component {
 
   updateBook = (book, new_shelf) => {
     BooksAPI.update(book, new_shelf)
+    console.log('here')
     var updatedBooks = findAndChange(this.state.books, book, new_shelf)
     this.setState({ books : updatedBooks })
   }
 
   updateQuery = (query) => {
     this.setState({ query })
-    if (BooksAPI.search(query)){
+    if (query !== ''){
       BooksAPI.search(query).then((res) => {
         this.setState({ searchResults : res })
       })
+    } else {
+      this.setState({ searchResults : [] })
     }
   }
 
@@ -55,7 +52,7 @@ class BooksApp extends Component {
               <ol className="books-grid">
                 {(this.state.searchResults && this.state.searchResults.length > 0)? this.state.searchResults.map(book => (
                   <li key={book.id}>
-                    <Book info={book} updateShelf={this.updateShelf} />
+                    <Book info={book} updateShelf={this.udpateBook} />
                   </li>
                 )) : null}
               </ol>

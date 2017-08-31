@@ -1,10 +1,19 @@
 import React, {Component} from 'react'
+import * as BooksAPI from './BooksAPI'
 import './App.css'
 
 
 class Book extends Component {
 	state = {
-		currentChoice: this.props.info.shelf
+		currentChoice: ''
+	}
+
+	componentDidMount = () => {
+		if (this.props.info.shelf){
+			this.setState({ currentChoice : this.props.info.shelf })
+		} else {
+			this.setState({ currentChoice : 'no-shelf' })
+		}
 	}
 
 	changeShelf = (event) => {
@@ -26,7 +35,7 @@ class Book extends Component {
 	                    <option value="currentlyReading">Currently Reading</option>
 	                    <option value="wantToRead">Want to Read</option>
 	                    <option value="read">Read</option>
-	                    <option value="none">None</option>
+	                    <option value="no-shelf">None</option>
 	                  </select>
 	                </div>
               	</div>
