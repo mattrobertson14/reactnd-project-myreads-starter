@@ -12,14 +12,18 @@ class BooksApp extends Component {
   }
 
   componentDidMount(){
+    /*  Gets all of the books from the server and puts
+        them in state in the books array */
     BooksAPI.getAll().then((books) => {
       this.setState({ books })
     })
   }
 
   updateBook = (book, new_shelf) => {
+    /* Updates book who's shelf was changed */
     BooksAPI.update(book, new_shelf)
-    console.log('here')
+
+    /* Updates the book in the books array in state */
     var updatedBooks = findAndChange(this.state.books, book, new_shelf)
     this.setState({ books : updatedBooks })
   }
@@ -41,7 +45,7 @@ class BooksApp extends Component {
         {this.state.showSearchPage ? (
           <div className="search-books">
             <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false })}>Close</a>
+              <a className="close-search" onClick={() => this.setState({ showSearchPage: false, query: '', searchResults: [] })}>Close</a>
               <div className="search-books-input-wrapper">
                 {}
                 <input type="text" placeholder="Search by title or author" value={this.state.query} onChange={(event) => this.updateQuery(event.target.value)}/>
