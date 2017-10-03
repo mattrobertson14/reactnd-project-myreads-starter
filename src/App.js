@@ -1,14 +1,16 @@
 import React, {Component} from 'react'
 import * as BooksAPI from './BooksAPI'
+import { Link } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import Book from './Book.js'
+import Search from './Search.js'
 import './App.css'
 
 class BooksApp extends Component {
   state = {
     books: [],
     query: '',
-    searchResults: [],
-    showSearchPage: false
+    searchResults: []
   }
 
   componentDidMount(){
@@ -24,7 +26,7 @@ class BooksApp extends Component {
     BooksAPI.update(book, new_shelf)
 
     /* Updates the book in the books array in state */
-    var updatedBooks = findAndChange(this.state.books, book, new_shelf)
+    let updatedBooks = findAndChange(this.state.books, book, new_shelf)
     this.setState({ books : updatedBooks })
   }
 
@@ -39,30 +41,18 @@ class BooksApp extends Component {
     }
   }
 
+  clearQuery = () => {
+    console.log("I cleared everything!")
+    this.setState({ query : '', searchResults : [] })
+  }
+
   render() {
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <div className="search-books">
-            <div className="search-books-bar">
-              <a className="close-search" onClick={() => this.setState({ showSearchPage: false, query: '', searchResults: [] })}>Close</a>
-              <div className="search-books-input-wrapper">
-                {}
-                <input type="text" placeholder="Search by title or author" value={this.state.query} onChange={(event) => this.updateQuery(event.target.value)}/>
-
-              </div>
-            </div>
-            <div className="search-books-results">
-              <ol className="books-grid">
-                {(this.state.searchResults && this.state.searchResults.length > 0)? this.state.searchResults.map(book => (
-                  <li key={book.id}>
-                    <Book info={book} updateShelf={this.udpateBook} />
-                  </li>
-                )) : null}
-              </ol>
-            </div>
-          </div>
-        ) : (
+      <Route path="/search" render={()=>(
+        <Search query={this.state.query} updateQuery={this.updateQuery} books={this.state.searchResults} updateBook={this.updateBook} />
+      )}/>
+      <Route exact path="/" render={()=>(
           <div className="list-books">
             <div className="list-books-title">
               <h1>MyReads</h1>
@@ -108,10 +98,10 @@ class BooksApp extends Component {
               </div>
             </div>
             <div className="open-search">
-              <a onClick={() => this.setState({ showSearchPage: true })}>Add a book</a>
+              <Link to='/search'>Add a book</Link>
             </div>
           </div>
-        )}
+        )}/>
       </div>
     )
   }
@@ -119,7 +109,7 @@ class BooksApp extends Component {
 
 /* Finds a book in an array and updates it's shelf */
 function findAndChange(books, book, new_shelf) {
-  var newArray = books.map((b) => {
+  let newArray = books.map((b) => {
     if (b.id === book.id) {
       b.shelf = new_shelf
     }
