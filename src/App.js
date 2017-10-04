@@ -9,8 +9,6 @@ import './App.css'
 class BooksApp extends Component {
   state = {
     books: [],
-    query: '',
-    searchResults: []
   }
 
   componentDidMount(){
@@ -30,27 +28,22 @@ class BooksApp extends Component {
     this.setState({ books : updatedBooks })
   }
 
-  updateQuery = (query) => {
-    this.setState({ query })
-    if (query !== ''){
-      BooksAPI.search(query).then((res) => {
-        this.setState({ searchResults : res })
-      })
-    } else {
-      this.setState({ searchResults : [] })
-    }
-  }
-
-  clearQuery = () => {
-    console.log("I cleared everything!")
-    this.setState({ query : '', searchResults : [] })
+  newBookFromSearch = (book, new_shelf) => {
+    let updatedBooks = this.state.books
+    updatedBooks.push(book)
+    this.setState({ books : updatedBooks })
+    this.updateBook(book, new_shelf)
   }
 
   render() {
     return (
       <div className="app">
       <Route path="/search" render={()=>(
-        <Search query={this.state.query} updateQuery={this.updateQuery} books={this.state.searchResults} updateBook={this.updateBook} />
+        <Search
+          updateBook={this.updateBook}
+          booksOnShelf={this.state.books}
+          addBook={this.newBookFromSearch}
+        />
       )}/>
       <Route exact path="/" render={()=>(
           <div className="list-books">
