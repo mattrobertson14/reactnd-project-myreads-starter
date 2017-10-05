@@ -17,6 +17,8 @@ class Search extends Component {
     if (query !== ''){
       BooksAPI.search(query).then((res) => {
         this.setState({ searchResults : res })
+      }).catch((error)=>{
+        this.setState({ searchResults : [] })
       })
     } else {
       this.setState({ searchResults : [] })
